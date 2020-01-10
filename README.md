@@ -1,2 +1,2 @@
 # sntakirutimana.github.io
-Hosting and Testing my first website project WayFarer
+:syai3Play: is an audio media player 
