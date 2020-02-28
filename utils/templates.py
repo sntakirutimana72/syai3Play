@@ -1,3 +1,13 @@
+from os import path
+from utils.app_envs import appDataDir
+from kivy.uix.widget import Widget
+from kivy.core.window import Window
+from pyautogui import position as pypos
+from kivy.effects.opacityscroll import OpacityScrollEffect
+from kivy.properties import ListProperty, NumericProperty, OptionProperty, \
+    ObjectProperty, BooleanProperty, StringProperty
+
+
 class CustomLayer(object):
     radius = ListProperty([0])
     outline_width = NumericProperty(1)
@@ -82,20 +92,20 @@ class Dragging(Widget):
 
     def on_drag_window(self):
         if self.draggable_obj == 'layer':
-            current_mouse_pos = self.to_local(*pyposition())
+            current_mouse_pos = self.to_local(*pypos())
             self.parent.x, self.parent.top = [current_mouse_pos[0] - self.dragging_ref_pos[0],
                                               current_mouse_pos[1] - self.dragging_ref_pos[1]]
         elif self.draggable_obj == 'app':
-            current_mouse_pos = pyposition()
+            current_mouse_pos = pypos()
             Window.left, Window.top = [current_mouse_pos[0] - self.dragging_ref_pos[0],
                                        current_mouse_pos[1] - self.dragging_ref_pos[1]]
 
     def _regulate_current_pos(self):
         if self.draggable_obj == 'layer':
-            current_mouse_pos = self.to_local(*pyposition())
+            current_mouse_pos = self.to_local(*pypos())
             current_win_left, current_win_top = self.parent.x, self.parent.top
         elif self.draggable_obj == 'app':
-            current_mouse_pos = pyposition()
+            current_mouse_pos = pypos()
             current_win_left, current_win_top = Window.left, Window.top
 
         self.dragging_ref_pos = [current_mouse_pos[0] - current_win_left,

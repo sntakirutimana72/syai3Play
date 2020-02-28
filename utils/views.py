@@ -1,6 +1,14 @@
 from kivy.lang import Builder
 from threading import Thread
+from kivy.uix.label import Label
+from utils.templates import *
+from kivy.uix.textinput import TextInput
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import Screen
+from kivy.uix.scrollview import ScrollView
 from utils.helpers import is_supported_format, duration_getter
+
 
 Builder.load_string('''
 <MainRoot>:
