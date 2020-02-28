@@ -1,4 +1,6 @@
 from kivy.lang import Builder
+from threading import Thread
+from utils.helpers import is_supported_format, duration_getter
 
 Builder.load_string('''
 <MainRoot>:
@@ -2046,442 +2048,293 @@ class MainRoot(BoxLayer):
 
 
 class VideoAudioPlayer(Screen):
-    __soundPlayer = ObjectProperty(None, allownone=True)
-    ''' Audio sound loader or provider or engine
-    :attr:`__soundPlayer` is a :class:`~kivy.properties.ObjectProperty` and default to None
-    '''
-    threadForCurrent = None
-    ''' A continuous running clock that reads current position from the playing media
-    :attr:`threadForCurrent` is a :class:`~<built-in 'object'>` and default to None
-    '''
-    source = StringProperty('')
-    ''' File address to load in from the local storage as media data to play
-    :attr:`source` is a :class:`~kivy.properties.StringProperty` and default to ''
-    '''
-    volume = NumericProperty(0.)
-    ''' Sound level for the media player either playing or not
-          this values between 0 and 1 never beyond the scope
-    :attr:`volume` is a :class:`~kivy.properties.NumericProperty` and default to 0.
-    '''
-    seek_pos = NumericProperty(None, allownone=True)
-    ''' Position value to jump to while the media is in play or pause state
-          the value is always between 0. and the estimated time-frame of the media
-    :attr:`seek_pos` is a :class:`~kivy.properties.NumericProperty` and default to None
-    '''
-    duration = NumericProperty(None, allownone=True)
-    ''' Estimated time-frame the media is supposedly to last if not otherwise
-    :attr:`duration` is a :class:`~kivy.properties.NumericProperty` and default to None
-    '''
-    current_pos = NumericProperty(None, allownone=True)
-    ''' Estimated time-frame the media is supposedly to last if not otherwise
-    :attr:`duration` is a :class:`~kivy.properties.NumericProperty` and default to None
-    '''
-    state = OptionProperty('stop', options=['stop', 'play', 'pause'])
-    ''' Media playing status
-    :attr:`state` is a :class:`~kivy.properties.OptionProperty` and default to 'stop'
-    ..Warning::attr~state: accepts only one of 'stop', 'play', 'pause'
-    '''
+    # An engine for audio medias
+    _audioModular = ObjectProperty(None, allownone=True)
+    # An engine for video medias
+    _videoModular = ObjectProperty(None, allownone=True)
+    # A threaded cpu-clock for reading current position audio playing media
+    _audioPositionThread = None
+    # current loaded media source file
+    _source = StringProperty('')
+    # default volume of media player
+    _volume = NumericProperty(0.5)
+    # Position value to jump to while the media is in play or pause state
+    _seek_pos = NumericProperty(None, allownone=True)
+    # Estimated media lasting period
+    _duration = NumericProperty(None, allownone=True)
+    # Current elapsed time-frame of the media
+    _current_pos = NumericProperty(None, allownone=True)
+    # media player functioning status
+    _state = OptionProperty('stop', options=['stop', 'play', 'pause'])
+    # Repeating feature status of the media player
     _loop = OptionProperty('none', options=['none', 'one', 'all'])
-    '''
-    '''
+    # randomizing status of the media player
     _shuffle = BooleanProperty(False)
-    '''
-    '''
-    force_stop = BooleanProperty(False)
-    '''
-    '''
-    nextIndex = NumericProperty(None, allownone=True)
-    '''
-    '''
-    currentIndex = NumericProperty(None, allownone=True)
-    '''
-    '''
+    # identifier for intentional cease of media functionality
+    _forcedStop = BooleanProperty(False)
+    _nextIndex = NumericProperty(None, allownone=True)
+    _currentIndex = NumericProperty(None, allownone=True)
     prevent_play_another = None
+    _keypadInterface = None
 
-    # when cursor enters window canvas, request custom keyboard
     def on_enter(self, window):
-        self._keyboard = None
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_key_down)
-
-    # when cursor leaves window canvas, release custom keyboard
-    def on_leave(self, window):
+        """ When mouse enters player, invoke acquire keypad and invoke keypad control directive protocol """
         try:
-            self._keyboard.unbind(on_key_down=self._on_key_down)
-            self._keyboard = None
-        except Exception:
-            pass
+            self._keypadInterface = window.request_keyboard(self._keypadInterface_detached, self)
+            self._keypadInterface.bind(on_key_down=self._command_media_directives_with_keypad_)
+        except Exception as exc:
+            logger.error_(f'Failed to acquire keyboard due to {exc}')
+            # -- snippets -- to inform user that keypad directives are not available
 
-    # handle key presses
-    def _on_key_down(self, keypad, code, char, mod):
-        if char == 's':
+    def on_leave(self, window=None):
+        """ When mouse leaves player, release keypad interface, and disengage keypad control directive protocol """
+        try:
+            if self._keypadInterface:
+                self._keypadInterface.unbind(on_key_down=self._command_media_directives_with_keypad_)
+                self._keypadInterface = None
+        except Exception as exc:
+            logger.error_(
+                f'''Failed to detach keypad-interface due to {exc}
+                    Deploying keypadInterface detaching countermeasure protocol
+                '''
+            )
+            self.on_leave()
+
+    def _command_media_directives_with_keypad_(self, interface, keyCode, character, modifier):
+        """ keypad directives for commanding media player """
+
+        if character == 's':
             self.stop_playback()
-        elif char == 'n':
+        elif character == 'n':
             self._next()
-        elif char == 'p':
+        elif character == 'p':
             self._previous()
-        elif char == 'l':
+        elif character == 'l':
             self._loop_alter(self.ids.loope)
-        elif char == 'm':
-            self.volume_hypothesis('mute')
-        elif char == 'r':
+        elif character == 'm':
+            self._volume_tuning_keypad_directive('mute')
+        elif character == 'r':
             self._shuffle_alter(self.ids.shufflee)
-        elif char == 'e':
+        elif character == 'e':
             self.headBar_hypothesis('mini')
-        elif char == 'd':
+        elif character == 'd':
             self.headBar_hypothesis('dock')
-        elif char == 'f':
+        elif character == 'f':
             self.headBar_hypothesis('full')
-        elif char == 'q':
+        elif character == 'q':
             self.headBar_hypothesis('quit')
-        elif code[1] == 'spacebar':
+        elif keyCode[1] == 'spacebar':
             self.play_pause(self.ids.pp)
-        elif code[1] == 'up' and 'ctrl' in mod:
-            self.volume_hypothesis('up')
-        elif code[1] == 'down' and 'ctrl' in mod:
-            self.volume_hypothesis('down')
-        elif code[1] == 'left' and 'shift' in mod:
+        elif keyCode[1] == 'up' and 'ctrl' in modifier:
+            self._volume_tuning_keypad_directive('up')
+        elif keyCode[1] == 'down' and 'ctrl' in modifier:
+            self._volume_tuning_keypad_directive('down')
+        elif keyCode[1] == 'left' and 'shift' in modifier:
             self.backward_wind()
-        elif code[1] == 'right' and 'shift' in mod:
+        elif keyCode[1] == 'right' and 'shift' in modifier:
             self.forward_wind()
 
-    # keyboard hypothesis
-    def volume_hypothesis(self, course):
-        tuner = self.ids.volTuner
-        if course == 'up':
-            vol = tuner.progressLevel + (tuner.size[0] * .05)
-        elif course == 'down':
-            vol = tuner.progressLevel - (tuner.size[0] * .05)
-        elif course == 'mute':
-            vol = 10e-24
-
-        if vol < 0:
-            vol = 10e-24
-        elif vol > tuner.size[0]:
-            vol = tuner.size[0]
-        tuner.progressLevel = vol
-
-    def headBar_hypothesis(self, course):
-        headBar = App.get_running_app().root.ids.head_bar
-        if course == 'full':
-            headBar.do_resize()
-        elif course == 'mini':
-            headBar.on_miniDockSwitch('mini')
-        elif course == 'dock':
-            headBar.on_miniDockSwitch('dock')
-        elif course == 'quit':
-            headBar.do_terminate()
-
-    # after the cursor leaves the window canvas end the keypad is released, do this
-    def _keyboard_closed(self):
+    def _keypadInterface_detached(self):
+        """ After the keypad has served its purpose, it gets released to reduce memory allocated """
         pass
 
-    # back door used to check if auto play is feasible
-    def is_ready(self, cpl=None):
-        return bool(self.__soundPlayer) if not cpl else self.state == 'stop'
+    def _volume_tuning_keypad_directive(self, action):
+        """ Volume regulation analysis based on keypad directive """
 
-    # back door to initiate sneaking playing or auto play
-    def autoPlay_backDoor(self, source, index):
-        # ensures that if there is a playback stops first
-        if self.source:
+        volumeTuner = self.ids.volTuner
+        if action == 'up':
+            volumeScale = volumeTuner.level + (volumeTuner.size[0] * .05)
+        elif action == 'down':
+            volumeScale = volumeTuner.level - (volumeTuner.size[0] * .05)
+        elif action == 'mute':
+            self._mute()
+            return
+
+        if volumeScale < 0:
+            volumeScale = 10e-24
+        elif volumeScale > volumeTuner.width:
+            volumeScale = volumeTuner.width
+        volumeTuner.level = volumeScale
+
+    @staticmethod
+    def _size_modulation_keypad_directive(action):
+        """ Resizing analysis of keypad directive """
+
+        if action == 'F':
+            pass
+        elif action == 'E':
+            pass
+        elif action == 'D':
+            pass
+        elif action in ('Q', 'ESC'):
+            pass
+
+    def _isMediaLoaded(self, state=None):
+        """ To find out if player is ready to read loaded media source """
+        return self._audioModular or self._videoModular
+
+    def playing_request_from_(self, source, index):
+        """ Communication stream from playlists to player """
+
+        if self._source:
             self.prevent_play_another = True
             self.apply_stop()
         # assign current media source index from its container
-        self.currentIndex = self.nextIndex = index
+        self._currentIndex = self._nextIndex = index
         # media source address to load its data
-        self.source = source
+        self._source = source
 
-    # div - Receiving a new media file source
-    def on_source(self, *largs):
-        # ensure NoneType or empty is not accepted
-        if not largs[1]:
+    def on_source(self, interface, new_source):
+        """ A trigger when player source path changes """
+
+        if not new_source:
             return
+        self._player_prepping_routine(new_source, is_supported_format(new_source))
 
-        if self.__soundPlayer is None:
-            self.init_player(largs[1])
-        else:
-            self.apply_stop()
-            self.__soundPlayer.source = largs[1]
-        self.apply_play()
-
-    # div - receiving volume new level and applying it
-    def on_volume(self, *largs):
-        if self.__soundPlayer is None:
-            return
-        self.__soundPlayer.volume = largs[1]
-
-    # div - handling new changes in media status instantly
-    def on_state(self, *largs):
+    def _player_prepping_routine(self, media_source, modular):
+        """ decides on which rightful modular to use given the format of media_source """
         pass
 
-    # div - jump to the new received position value
-    def on_seek_pos(self, *largs):
-        # ensure NoneType is not accepted
-        if largs[1] is None:
+    def on_volume(self, interface, intensity):
+        """ A trigger to apply volume compliance when changes occur """
+
+        if self._audioModular:
+            self._audioModular.volume = intensity
+        elif self._videoModular:
+            self._videoModular.volume = interface
+
+    def on_state(self, interface, status):
+        """ A trigger to invoke certain protocols when changes occur to player state """
+        pass
+
+    def on_seek_pos(self, interface, jump_to):
+        """  triggers certain protocols when changes occur """
+
+        if jump_to is None:
             return
-        # now seeking new position value
-        if self.state == 'pause':
-            self.current_pos = largs[1]
-        elif self.state == 'play':
-            self.threadForCurrent.cancel()
-            self.__soundPlayer.seek(largs[1])
-            self.threadForCurrent()
+        if self._videoModular:
+            pass
+        if self._audioModular:
+            pass
+        # After certain protocols have completed their routines, reset this value default
+        self._seek_pos = None
 
-        # resetting :attr:`seek_pos` to its initial value None
-        self.seek_pos = None
+    def on_duration(self, interface, lifetime):
+        """ triggers protocols for updating-UI when changes occur """
 
-    # div - GUI value update with the estimated and elapsed time-frame of the playing media
-    def on_duration(self, *largs):
-        # ensure NoneType is not accepted
-        if largs[1] is None:
+        if lifetime is None:
             return
-        # updating GUI to match current duration value
-        self.ids.time_estimate.time_stamp = largs[1]
-        self.ids.track_name.compute_restartTime(largs[1])
 
-    def on_current_pos(self, *largs):
-        # ensure NoneType is not accepted
-        if largs[1] is None:
+    def on_current_pos(self, interface, pos_at):
+        """ triggers protocols for UI-updating when changes occur """
+
+        if pos_at is None:
             return
-        # updating GUI to match current pos value
-        self.ids.time_lap.time_stamp = largs[1]
-        self.ids.mediaPos.progressLevel = (
-                (largs[1] / self.duration) * self.ids.mediaPos.size[0])
 
-    # div - player initiation for the first time
-    def init_player(self, filet):
-        self.__soundPlayer = SoundLoader.load(filet)
-        self.__soundPlayer.volume = self.volume
-        self.add_listeners()
+    def _manual_duration_getter_for_audios(self):
+        """ cpu-clocked targeted for retrieving playing media duration lifetime value
+            And more, initiates a threaded cpu-clock getter for current position
+            This applies only on audio medias
+        """
 
-    # div - retrieving playing media duration time-frame
-    ## And initiate the current_pos getter thread
-    def get_length(self, *largs):
-        length = self.get_media_duration()
-
-        if (length <= 0) or (type(length) is not float):
-            Clock.schedule_once(self.get_length, .02)
+        media_duration = duration_getter(self.source)
+        if (media_duration <= 0) or (type(media_duration) is not float):
+            Clock.schedule_once(lambda *largs: self._manual_duration_getter_for_audios(), .28)
         else:
-            self.duration = length
-            if self.threadForCurrent is None:
-                self.threadForCurrent = Clock.schedule_interval(self.get_pos, .01)
-            else:
-                self.threadForCurrent()
+            self.duration = media_duration
+            self._audioPositionThread = Thread(
+                target=Clock.schedule_interval,
+                args=(self._manual_pos_getter_for_audios, .48)).start()
 
-    # mechanism to access the media duration even when not playing
-    def get_media_duration(self):
-        from tinytag import TinyTag
-        song_detail = TinyTag.get(self.source)
-        return song_detail.duration
-
-    # div - current-pos getter handler
-    def get_pos(self, *largs):
-        current_pos = self.__soundPlayer.get_pos()
+    def _manual_pos_getter_for_audios(self, *largs):
+        current_pos = self._audioModular.get_pos()
         self.current_pos = 0 if current_pos < 0 else current_pos
 
-    # div - status handler for the media loader itself, in here it decides
-    # on whether to continue playing given available options or cease playing
-    def on_media_state(self, *largs):
-        if largs[1] == 'stop':
-            self.threadForCurrent.cancel()
+    def on_modular_state(self, modular, status):
+        """ triggers certain routines when such Modular state changes """
 
-            if self.force_stop:
-                self.reset_player_protocol()
-            else:
-                if self.state == 'play':
-                    self.reset_player_GUIs()
-                    if self.prevent_play_another:
-                        self.prevent_play_another = None
-                    else:
-                        self.play_another_protocol()
+        if status == 'play':
+            pass
+        elif status == 'pause':
+            pass
         else:
-            if self.state == 'stop':
-                self.get_length()
-                self.update_player_GUIs()
+            pass
 
-    # div - applying stop features while media player is in pause or play state
-    # ..this method is invoked only when trying to load another while another's loaded before
-    def apply_stop(self):
-        if self.state == 'pause':
-            self.on_media_state('', 'stop')
-        else:
-            self.__soundPlayer.stop()
+    def _stopping_routine(self):
+        """ collective actions to be carried out if player is to stop reading operations """
+        pass
 
-    # div - applying pause features while media player is playing
-    def apply_pause(self):
-        self.state = 'pause'
-        self.__soundPlayer.stop()
+    def _pausing_routine(self):
+        """ collective actions to be carried out if player is to freeze reading operations """
+        pass
 
-    # div - applying resume or replay features
-    def apply_play(self):
-        self.__soundPlayer.play()
+    def _playing_routine(self):
+        """ certain changes and updates to be applied when player enters reading operations """
+        pass
 
-        if self.state == 'pause':
-            self._resume_protocol()
+    def _resuming_routine(self):
+        """ Bunch of actions to be carried out when resuming player operations """
+        pass
 
-    # div - applying resume media protocol
-    def resume(self, *largs):
-        length = self.__soundPlayer.length
-        if (length <= 0) or (type(length) is not float):
-            Clock.schedule_once(self.resume, .02)
-        else:
-            self.__soundPlayer.volume = self.volume
-            self.seek_pos = self.current_pos
-            self.threadForCurrent()
+    def _resuming_audio_sub_routine(self):
+        """ Other necessary key changes to make when resuming audio media """
 
-    def _resume_protocol(self):
-        self.__soundPlayer.volume = 0
-        self.state = 'play'
-        self.resume()
-        self.ids.pp.source = 'Icons/pause.png'
+        self._audioModular.volume = 0
+        # self.state = 'play'
+        # self.resume()
+        # self.ids.pp.source = 'Icons/pause.png'
 
-    # div - after a forced stop protocol
-    def reset_player_protocol(self):
-        self.force_stop = False
-        self.reset_player_GUIs()
+    def _player_resetting_routine(self):
+        """ reset player to default means undo all changes made to it or in its behalf """
+        pass
 
-    # div - ensures a continuous playback given right options
-    def play_another_protocol(self):
-        # accessing activePlaylist widget
-        uniquePlaylist = self.get_activePlaylist()
-        # scheduling another available media
-        uniquePlaylist.ids.play_list.get_another(
-            index=self.nextIndex, _loop=self._loop, _random=self._shuffle)
+    def _nextInline_to_play_routine(self):
+        """ decides on whether player should continues its operations or not """
+        pass
 
-    # get an active playlist
-    def get_activePlaylist(self):
-        root = App.get_running_app().root
-        # accessing playlistManager widget
-        playlistManager = root.ids.head_bar.ensure_existenceOf_leftNav()
-        # accessing activePlaylist widget and returning it
-        return playlistManager.ids[playlistManager.activePlaylist]
+    def _clear_modularTriggers(self):
+        """ clears changes-observers to modular attributes """
+        pass
 
-    # div - media loader event listeners
-    def remove_listeners(self):
-        self.__soundPlayer.unbind(state=self.on_media_state)
+    def _create_modularTriggers(self):
+        """ adds changes-observers to modular attributes """
+        pass
 
-    def add_listeners(self):
-        self.__soundPlayer.bind(state=self.on_media_state)
+    def _create_playerProgress_levelTriggers(self):
+        """ adds changes-triggers to progress bars of the players """
+        pass
 
-    # div - progress bars event listeners' handlers
-    def add_progressBars_listeners(self):
-        self.ids.volTuner.bind(progressLevel=self._adjust_volume)
-        self.ids.mediaPos.bind(stoppedAtLevel=self._seek_pos)
+    def pauseAndPlay_(self, interface):
+        """ motion event of pause and play interface-actors """
+        pass
 
-    def _adjust_volume(self, *largs):
-        self.volume = largs[1] / largs[0].size[0]
+    def stop_(self, interface):
+        """ motion events of stop interface-actor """
+        pass
 
-    def _seek_pos(self, *largs):
-        self.seek_pos = largs[1] * self.duration / largs[0].size[0]
+    def forward_(self, interface):
+        """ motion events of forward interface-actor """
+        pass
 
-    # div - GUIs reset after playing or in case of shifting to another media
-    def reset_player_GUIs(self):
-        # resetting local variables to initial status
-        self.source = ''
-        self.state = 'stop'
-        self.change_colorOf_mediaItem()
-        self.duration = self.seek_pos = self.current_pos = None
-        # resetting back to initial status GUI features
-        self.ids.pp.source = 'Icons/play.png'
-        self.ids.track_format.textVal = ' '
-        self.ids.mediaPos.progressLevel = 10e-24
-        self.ids.mediaPos.bar_active = False
-        self.ids.track_name.text = 'No track'
-        self.ids.time_lap.time_stamp = None
-        self.ids.time_estimate.time_stamp = None
-        self.ids.track_name.color = [.2, .2, .2, 1]
-        self.ids.track_name.compute_restartTime()
+    def backward_(self, interface):
+        """ motion events of backward interface-actor """
+        pass
 
-    def change_colorOf_mediaItem(self):
-        # accessing the active playlist widget
-        uniquePlaylist = self.get_activePlaylist()
-        # changing text color of the current track to initial
-        uniquePlaylist.ids.play_list.playback_finished(self.currentIndex)
+    def next_(self, interface):
+        """ motion events of next interface-actor """
+        pass
 
-    # div - setting up ready and smart the GUIs when media play-state initiated
-    def update_player_GUIs(self):
-        self.state = 'play'
-        self.ids.pp.source = 'Icons/pause.png'
+    def previous_(self, interface):
+        """ motion events of previous interface-actor """
+        pass
 
-        self.ids.mediaPos.bar_active = True
-        self.ids.track_name.color = [.6, 1, .6, 1]
-        self.ids.track_name.text = path.basename(self.source)
-        self.ids.track_format.textVal = self.source.rsplit('.', 1)[-1].lower()
+    def loop_(self, interface):
+        """ motion events of loop interface-actor """
+        pass
 
-    # div - manual controls and directives on media with GUI features
-    def play_pause(self, *largs):
-        if self.__soundPlayer is None:
-            return
-
-        if self.state == 'play':
-            self.apply_pause()
-            largs[0].source = 'Icons/play.png'
-        elif self.state == 'pause':
-            self.apply_play()
-        else:
-            self.nextIndex -= 1
-            self.play_another_protocol()
-
-    def stop_playback(self):
-        # ensures that this course of action only applied when playing
-        if (self.__soundPlayer is None) or (self.state == 'stop'):
-            return
-
-        self.force_stop = True
-        self.apply_stop()
-
-    def forward_wind(self):
-        # ensures that this course of action only applied when playing
-        if (self.__soundPlayer is None) or (self.state == 'stop'):
-            return
-
-        # jumping forward 5 secs on the current pos
-        jump_pos = self.current_pos + 5.
-        # ensuring that the jump is never greater than the media duration
-        if jump_pos > self.duration:
-            jump_pos = self.duration
-        self.seek_pos = jump_pos
-
-    def backward_wind(self):
-        # ensures that this course of action only applied when playing
-        if (self.__soundPlayer is None) or (self.state == 'stop'):
-            return
-
-        # jumping forward 5 secs on the current pos
-        jump_pos = self.current_pos - 5
-        # ensuring that the jump is never less than media initial pos which is 0.
-        if jump_pos < 0.:
-            jump_pos = 0.
-        self.seek_pos = jump_pos
-
-    def _next(self):
-        # ensures that this course of action only applied when playing
-        if (self.__soundPlayer is None) or (self.state == 'stop'):
-            return
-        if self._loop == 'one':
-            self.nextIndex += 1
-        self.apply_stop()
-
-    def _previous(self):
-        # ensures that this course of action only applied when playing
-        if (self.__soundPlayer is None) or (self.state == 'stop'):
-            return
-        if self._loop == 'one':
-            self.nextIndex -= 1
-        else:
-            self.nextIndex -= 2
-        self.apply_stop()
-
-    def _loop_alter(self, *largs):
-        self._loop, _source = {
-            'none': ['one', 'repeat-1.png'], 'one': ['all', 'repeat-all.png'],
-            'all': ['none', 'repeat-off.png']}.get(self._loop)
-        largs[0].source = path.join('Icons', _source)
-
-    def _shuffle_alter(self, *largs):
-        self._shuffle = not self._shuffle
-        largs[0].source = path.join(
-            'Icons', 'shuffle-on.png' if self._shuffle else 'shuffle-off.png')
+    def shuffle_(self, interface):
+        """ motion events of shuffle interface-actor """
+        pass
 
 
 class Recorder(Screen):
@@ -2501,18 +2354,4 @@ class Downloader(Screen):
 
 
 class Splashing(BoxLayout):
-    def __init__(self, **kwargs):
-        super(SplashScreen, self).__init__(**kwargs)
-        self.padding = (150, 54)
-        self.normal = [.12, .12, .15, 1]
-        self.outl_clr = [.4, .3, .3, .4]
-        self.outl_w = 2
-        self.add_widget(LoadingStatus(message='Please wait..'))
-        Clock.schedule_once(self._main_window_ready, 10)
-
-    def _main_window_ready(self, c_frame):
-        app = App.get_running_app()
-        Window.remove_widget(self)
-        root = _mainRoot_ if _mainRoot_ else MainRoot()
-        Window.add_widget(root)
-        app.root = root
+    pass
