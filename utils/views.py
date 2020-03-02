@@ -1,12 +1,19 @@
+import re
+import json
+from os import listdir
+from kivy.app import App
 from threading import Thread
 from kivy.clock import Clock
 from kivy.lang import Builder
 from utils.templates import *
 from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
+from kivy.animation import Animation
+from pyautogui import size as pysize
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+from utils.read_config import read_config
 from kivy.uix.gridlayout import GridLayout
+from utils.loggers import alert_, inform_
 from utils.helpers import is_supported_format, duration_getter, format_media_timestamp
 
 
@@ -41,6 +48,9 @@ Builder.load_string("""
             pos: (self.x + self.level - (self.height + 10) / 2, self.y - 5)
             size: (self.height + 10, self.height + 10)
             source: self.handle_image
+            
+            
+<SyaiV3Play>:
 """)
 
 
@@ -247,7 +257,7 @@ class SidedMenuElement(GridLayout):
         return 25 if not self.contents else (26 + self.contents.size[1])
 
 
-class PlaylistContainer(SidedMenuElement):
+class PlaylistPool(SidedMenuElement):
     focused = None
     source = 'Icons/playlist.png'
 
@@ -407,10 +417,7 @@ class PlaylistContainer(SidedMenuElement):
         self.enablePlaylistDelete = self.enablePlaylistRename = val
 
     def _create_playlist(self):
-        name_input = PlaylistNameInput()
-        name_input.children[0].bind(focus=self.check_playlist_name)
-        pos_index = len(self.contents.children) - 1
-        self.contents.add_widget(name_input, pos_index)
+        pass
 
     def _rename_playlist(self):
         # title = self.focused.ids.head_title
@@ -465,7 +472,7 @@ class PlaylistContainer(SidedMenuElement):
         return playlist_exist
 
     def init_singlePlaylist(self, i_name):
-        new_playlist = SinglePlaylist(title=i_name, grand_parent=self)
+        new_playlist = TypicalPlaylist(title=i_name)
         self.contents.add_widget(new_playlist)
         self.contents.size[1] += 28
         self.ids[i_name] = new_playlist
@@ -539,46 +546,26 @@ class PlaylistContainer(SidedMenuElement):
     def finalize_savingProcess(self):
         pass
 
-    def open_playlistJSON(self, mode='r'):
+    @staticmethod
+    def open_playlistJSON(mode='r'):
         try:
-            with open("./syai3Play/data.json", mode) as json_object:
-                json_data = json.load(json_object)
+            with open(path.join(appDataDir(), 'backbone.json'), mode) as backboneFD:
+                backboneJSOn = json.load(backboneFD)
+            return backboneJSOn
         except Exception as exc:
-            Logger.error('SYAI3Play: Cannot data file due to <{}>'.format(exc))
-        finally:
-            return json_data
+            alert_(f'SCannot data file due to <{exc}>')
 
-    def save_JSONData(self, JSONdata):
+    @staticmethod
+    def save_JSONData(jsonDATA):
         try:
-            with open("./syai3Play/data.json", 'w') as json_object:
-                json.dump(JSONdata, json_object)
+            with open(path.join(appDataDir(), 'backbone.json'), 'w') as backboneFD:
+                json.dump(jsonDATA, backboneFD)
         except Exception as exc:
-            Logger.error('SYAI3Play: Cannot save file due to <{}>'.format(exc))
+            alert_(f'Cannot save file due to <{exc}>')
 
 
-class PlayItemManager(GridLayout):
-    focused = ObjectProperty(None, allownone=True)
-    ''' contains the selected child
-    :attr:`focused` is a :class:`~kivy.properties.ObjectProperty` and
-        default to None
-    '''
-
-    def on_new_focused(self, child):
-        if self.focused is child:
-            self.focused = None
-        else:
-            if self.focused:
-                self.focused.admit_focus()
-            self.focused = child
-            child.change_playing_color()
-
-    def on_focused(self, *largs):
-        if not largs[1]:
-            return
-        root = App.get_running_app().root
-        focused_index = self.children.index(largs[1])
-        index = len(self.children) - (1 + focused_index)
-        root.ids.play3GUIs.autoPlay_backDoor(largs[1].fileSource, index)
+class TypicalPlaylist(BoxLayer, Clicking, Hovering):
+    title = StringProperty('')
 
     def playback_finished(self, index):
         prop_index = len(self.children) - (1 + index)
@@ -628,46 +615,6 @@ class PlayItemManager(GridLayout):
             self.children[random_index].on_down()
 
 
-class PlaylistNameInput(BoxLayer):
-    text = StringProperty('Enter Playlist Name')
-
-    def __init__(self, **kwargs):
-        super(PlaylistNameInput, self).__init__(**kwargs)
-        self.normal = [.2, .2, .2, 1]
-        self.radius = [4]
-        self.padding = [10, 0]
-        self.size_hint_y = None
-        self.height = 28
-        name_input = InputField(text=self.text)
-        self.add_widget(name_input)
-
-    def on_touch_down(self, touch):
-        if not self.collide_point(*touch.pos):
-            if self.parent:
-                self.parent.remove_widget(self)
-        return super(PlaylistNameInput, self).on_touch_down(touch)
-
-    def on_parent(self, *largs):
-        root = App.get_running_app().root
-
-        if largs[1]:
-            root.ids.play3GUIs.on_leave(Window)
-            root.remove_window_cursor_listeners()
-        else:
-            root.add_window_cursor_listeners()
-            root.ids.play3GUIs.on_enter(Window)
-
-
-class InputField(TextInput):
-    write_tab = BooleanProperty(False)
-    font_size = NumericProperty('11sp')
-    multiline = BooleanProperty(False)
-    cursor_color = ListProperty([1, 1, .7, 1])
-    background_color = ListProperty([0, 0, 0, 0])
-    foreground_color = ListProperty([.8, .5, .5, 1])
-    font_name = StringProperty("RobotoMono-Regular")
-
-
 class HeadBar(GridLayer):
     currentPlaylist = StringProperty('current playlist name')
     ''' the name of the active or current working on playlist
@@ -688,18 +635,15 @@ class HeadBar(GridLayer):
         self.register_event_type('on_drag_window')
         super(HeadBar, self).__init__(**kwargs)
 
-    def getProperty(self, prop_name):
-        return getProperty(prop_name)
-
     def on_touch_down(self, touch):
         if not (not (self.children[0].collide_point(
-                *touch.pos) or self.children[1].children[0].collide_point(
+            *touch.pos) or self.children[1].children[0].collide_point(
             *touch.pos)) and self.collide_point(*touch.pos)):
             return super(HeadBar, self).on_touch_down(touch)
 
         touch.grab(self)
         Window.grab_mouse()
-        pos = pyauto.position()
+        pos = pypos()
         left, top = Window.left, Window.top
         self.drag_pos = [pos[0] - left, pos[1] - top]
         return True
@@ -714,9 +658,8 @@ class HeadBar(GridLayer):
             Window.ungrab_mouse()
 
     def on_drag_window(self):
-        pos = pyauto.position()
-        Window.left, Window.top = (
-            pos[0] - self.drag_pos[0], pos[1] - self.drag_pos[1])
+        pos = pypos()
+        Window.left, Window.top = (pos[0] - self.drag_pos[0], pos[1] - self.drag_pos[1])
 
     def do_minimize(self):
         Window.minimize()
@@ -728,7 +671,7 @@ class HeadBar(GridLayer):
             # preventing window from making auto view switching on resize
             root.resizeLock = True
 
-            x, total_x = root.width, pyauto.size()
+            x, total_x = root.width, pysize()
             ratio = x / total_x[0]
             if ratio >= .95:
                 size = (650, total_x[1] * .5)
@@ -752,9 +695,7 @@ class HeadBar(GridLayer):
     '''
 
     def _revealMoreOptions(self):
-        root = App.get_running_app().root
-        current_s = root.ids.disp_manager.current_screen
-        current_s.add_widget(MoreOptions(root=self))
+        pass
 
     def on_miniDockSwitch(self, mode):
         if self.viewMode == mode:
@@ -860,7 +801,7 @@ class HeadBar(GridLayer):
         # checking if the left-nav was once already created
         if not left_nav:
             # creating the left-nav for the first time if necessary
-            left_nav = LeftNavMenu()
+            left_nav = SidedMenuNavigator()
         else:
             # deleting the left-nav if found in store
             del self.strippedViews['left-nav']
@@ -898,7 +839,7 @@ class HeadBar(GridLayer):
             left_nav = self.strippedViews.get('left-nav')
             if not left_nav:
                 # creating the left-nav for the first time if necessary
-                left_nav = LeftNavMenu()
+                left_nav = SidedMenuNavigator()
                 # storing it
                 self.strippedViews['left-nav'] = left_nav
         else:
@@ -910,16 +851,13 @@ class HeadBar(GridLayer):
 
 class VolumeTuner(LevelBar):
 
-    def on_parent(self, *largs):
-        if largs[1]:
-            Clock.schedule_once(self.initial_player_volume, 1)
+    def __init__(self, **kwargs):
+        super(VolumeTuner, self).__init__(**kwargs)
+        self._pre_configuring()
 
-    def initial_player_volume(self, *largs):
-        if self.size[0] < 101:
-            Clock.schedule_once(self.initial_player_volume, .02)
-        else:
-            vol = SETTINGS.getfloat('MEDIA', 'volume')
-            self.level = self.size[0] * vol
+    def _pre_configuring(self):
+        volume_scale = read_config('player', 'volume')
+        self.level = self.width * float(volume_scale)
 
 
 class RollingLabel(ScrollingBehavior):
@@ -949,7 +887,7 @@ class RollingLabel(ScrollingBehavior):
     restart_time = NumericProperty(30)
 
     def __init__(self, **kwargs):
-        super(AutoRollLabel, self).__init__(**kwargs)
+        super(RollingLabel, self).__init__(**kwargs)
         self.animation_1 = None
         self.animation_2 = None
 
@@ -1127,12 +1065,8 @@ class SyaiV3Play(BoxLayer):
     '''
 
     def __init__(self, **kwargs):
-        super(MainRoot, self).__init__(**kwargs)
+        super(SyaiV3Play, self).__init__(**kwargs)
         self.ready = Clock.schedule_interval(self._getReady_, .1)
-
-    @staticmethod
-    def getProperty(prop_name):
-        return getProperty(prop_name)
 
     def on_size(self, *largs):
         if self.resizeLock is None:
@@ -1153,7 +1087,7 @@ class SyaiV3Play(BoxLayer):
             self.ready.cancel()
             self.ready = True
             # positioning window on startup
-            startUp_window_pos()
+            # startUp_window_pos()
             # turning volume and media progress bars interacting
             self.ids.play3GUIs.add_progressBars_listeners()
             # listening to mouse position relative to window so to set custom keypad
@@ -1223,26 +1157,22 @@ class SyaiV3Play(BoxLayer):
 
         # the address points to file
         elif path.isfile(address):
-            # reading accepted file formats from settings file
-            formats = json.loads(SETTINGS.get('MEDIA', 'formats'))
             # getting the file format
-            format_index = address.rsplit('.', 1)[-1]
+            dropped_file_format = address.rsplit('.', 1)[-1].lower()
             # checking if the file format is compatible with accepted ones
             # if so, add the address to the temp_dropped
-            if format_index.lower() in formats:
-                self.initiate_temp_dropped()
-                self.temp_dropped.append(address)
-            else:
-                return
+            for _, formats_ in read_config('supported-media-formats'):
+                if dropped_file_format in formats_:
+                    self.initiate_temp_dropped()
+                    self.temp_dropped.append(address)
+                    return
 
     def disable_dropFile(self):
         # disabling file dropping capability
         Window.unbind(on_dropfile=self.on_file_dropped)
 
     def show_dropping_status(self):
-        loading = LoadingStatus(
-            padding=(0, 5), size_hint_x=None, width=55)
-        self.ids.head_bar.ids.posterOffice.add_widget(loading, 2)
+        pass
 
     def remove_dropping_status(self):
         poster = self.ids.head_bar.ids.posterOffice
@@ -1302,7 +1232,7 @@ class VideoAudioPlayer(Screen):
             self._keypadInterface = window.request_keyboard(self._keypadInterface_detached, self)
             self._keypadInterface.bind(on_key_down=self._command_media_directives_with_keypad_)
         except Exception as exc:
-            logger.error_(f'Failed to acquire keyboard due to {exc}')
+            alert_(f'Failed to acquire keyboard due to {exc}')
             # -- snippets -- to inform user that keypad directives are not available
 
     def on_leave(self, window=None):
@@ -1312,7 +1242,7 @@ class VideoAudioPlayer(Screen):
                 self._keypadInterface.unbind(on_key_down=self._command_media_directives_with_keypad_)
                 self._keypadInterface = None
         except Exception as exc:
-            logger.error_(
+            alert_(
                 f'''Failed to detach keypad-interface due to {exc}
                     Deploying keypadInterface detaching countermeasure protocol
                 '''

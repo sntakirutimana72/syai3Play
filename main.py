@@ -1,12 +1,16 @@
 if __name__ == '__main__':
     import sys
     from kivy.app import App
-    from utils.views import LevelBar
-    from kivy.uix.floatlayout import FloatLayout
+    from utils.views import SyaiV3Play
+
 
     class V3PlayApp(App):
         title = 'syai-V3Play'
         use_kivy_settings = False
+
+        def build(self):
+            self.root = SyaiV3Play()
+            return self.root
 
         def on_start(self):
             pass
@@ -22,5 +26,6 @@ if __name__ == '__main__':
 
         def on_stop(self, *largs):
             pass
+
 
     V3PlayApp().run()
