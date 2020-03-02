@@ -1,9 +1,11 @@
 if __name__ == '__main__':
     import sys
     from kivy.app import App
+    from utils.views import LevelBar
+    from kivy.uix.floatlayout import FloatLayout
 
     class V3PlayApp(App):
-        title = 'syaiV3Play'
+        title = 'syai-V3Play'
         use_kivy_settings = False
 
         def on_start(self):
