@@ -1157,15 +1157,12 @@ class SyaiV3Play(BoxLayer):
 
         # the address points to file
         elif path.isfile(address):
-            # getting the file format
-            dropped_file_format = address.rsplit('.', 1)[-1].lower()
             # checking if the file format is compatible with accepted ones
             # if so, add the address to the temp_dropped
-            for _, formats_ in read_config('supported-media-formats'):
-                if dropped_file_format in formats_:
-                    self.initiate_temp_dropped()
-                    self.temp_dropped.append(address)
-                    return
+            if is_supported_format(address):
+                self.initiate_temp_dropped()
+                self.temp_dropped.append(address)
+                return
 
     def disable_dropFile(self):
         # disabling file dropping capability
