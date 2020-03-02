@@ -173,7 +173,7 @@ class FocusBehavior(object):
             else self.focus_background_color.copy()
 
 
-class ScrollBehavior(ScrollView):
+class ScrollingBehavior(ScrollView):
     bar_color = ListProperty([0, 0, 0, 0])
     bar_inactive_color = ListProperty([0, 0, 0, 0])
     effect_cls = ObjectProperty(OpacityScrollEffect)
