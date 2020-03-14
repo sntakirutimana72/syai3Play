@@ -11,22 +11,19 @@ from kivy.properties import ListProperty, NumericProperty, OptionProperty, \
 
 
 class CustomLayer(Widget):
-    radius = ListProperty([0])
-    outline_width = NumericProperty(1)
-    outline_color = ListProperty([0, 0, 0, 0])
+    border_radius = ListProperty([0])
+    border_width = NumericProperty(1)
+    border_color = ListProperty([0, 0, 0, 0])
     background_color = ListProperty([0, 0, 0, 0])
     hover_background_color = ListProperty(None)
     focus_background_color = ListProperty(None)
 
 
 class IconFullPath(object):
-    pace = NumericProperty(0)
-    radius = ListProperty([0])
     source = StringProperty('')
     icon_name = StringProperty('')
-    cover_color = ListProperty([1, 1, 1, 1])
 
-    def on_icon_name(self, widget, value):
+    def on_icon_name(self, interface, value):
         icon_full_relative_path = path.join(appDataDir(), 'icons', value)
         if path.isfile(icon_full_relative_path):
             self.source = icon_full_relative_path
@@ -140,37 +137,8 @@ class Clicking(Widget):
         pass
 
 
-class FocusBehaviorHandler(object):
-    behaviorFocus = ObjectProperty(None, allownone=True)
-
-    def __init__(self, **kwargs):
-        self.register_event_type('on_focusBehavioral')
-        super(FocusBehaviorHandler, self).__init__(**kwargs)
-
-    def on_focusBehavioral(self, behavior):
-        pass
-
-
-class FocusBehavior(object):
-    focusBehaved = BooleanProperty(False)
-
-    def on_focusBehaved(self, widget, behaved):
-        if not behaved:
-            self.background_color = [0, 0, 0, 0]
-        elif behaved and not self.hovered:
-            self.background_color = self.focus_background_color.copy()
-
-    def on_release(self):
-        if not self.focusBehaved:
-            self.focusBehaved = True
-
-    def on_hover(self):
-        self.background_color = self.hover_background_color.copy()
-
-    def on_leave(self):
-        self.background_color = [0, 0, 0, 0] \
-            if not self.focusBehaved \
-            else self.focus_background_color.copy()
+class ButtonTemplate(Clicking, CustomLayer, Hovering):
+    pass
 
 
 class ScrollingBehavior(ScrollView):
@@ -276,3 +244,34 @@ class LevelBar(CustomLayer, Hovering):
 
     def on_final_point(self):
         pass
+
+
+class FocusBehaviorHandler(object):
+    behaviorFocus = ObjectProperty(None, allownone=True)
+
+    def __init__(self, **kwargs):
+        self.register_event_type('on_focusBehavioral')
+        super(FocusBehaviorHandler, self).__init__(**kwargs)
+
+    def on_focusBehavioral(self, behavior):
+        pass
+
+
+class FocusBehavior(object):
+    focusBehaved = BooleanProperty(False)
+
+    def on_focusBehaved(self, widget, behaved):
+        if not behaved:
+            self.background_color = [0, 0, 0, 0]
+        elif behaved and not self.hovered:
+            self.background_color = self.focus_background_color.copy()
+
+    def on_release(self):
+        if not self.focusBehaved:
+            self.focusBehaved = True
+
+    def on_hover(self):
+        self.background_color = self.hover_background_color.copy()
+
+    def on_leave(self):
+        self.background_color = [0, 0, 0, 0] if not self.focusBehaved else self.focus_background_color.copy()

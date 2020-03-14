@@ -25,6 +25,7 @@ def format_media_timestamp(timestamp):
 
 
 def is_supported_format(source):
+    """ verify source file format if is supported by available modular """
     format_radical = source.rstrip('.')[-1].lower()
     if format_radical in read_config('supported-media-formats', 'audio'):
         return 'audio'
@@ -35,5 +36,6 @@ def is_supported_format(source):
 
 
 def duration_getter(source):
+    """ audio-video metadata getter, for instance media duration """
     media_details = audio_metadata.load(source)
     return media_details.streaminfo.duration
