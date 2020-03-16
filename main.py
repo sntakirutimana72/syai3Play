@@ -4,7 +4,7 @@ if __name__ == '__main__':
 
     import sys
     from kivy.app import App
-    from utils.views import SyaiV3Play
+    from views.views import SyaiV3Play
 
 
     class V3PlayApp(App):

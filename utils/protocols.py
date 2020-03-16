@@ -26,6 +26,8 @@ def startup_protocol():
                 left = int((width - ration_width) * .5)  # x-axis
                 top = int((height - ration_height) * .5) - 20 # y-axis
 
+                Config.set('graphics', 'minimum_width', f'{ration_width}')
+                Config.set('graphics', 'minimum_height', f'{ration_height}')
                 Config.set('graphics', 'width', f'{ration_width}')
                 Config.set('graphics', 'height', f'{ration_height}')
                 Config.set('graphics', 'left', f'{left}')

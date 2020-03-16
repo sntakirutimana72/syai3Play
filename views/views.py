@@ -4,94 +4,68 @@ from utils.loggers import alert_, inform_
 from os import listdir
 from kivy.app import App
 from threading import Thread
-from utils.templates import *
+from guix import templates as uix
+from guix.headbar import HeadBar
+from guix.levelbar import LevelBar
+from guix.customlayers import CustomLayer
 from kivy.uix.label import Label
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from utils.read_config import read_config
 from kivy.uix.gridlayout import GridLayout
+from kivy.properties import ListProperty, BooleanProperty, \
+    StringProperty, OptionProperty, NumericProperty, ObjectProperty
 from utils.helpers import is_supported_format, duration_getter, \
     format_media_timestamp, digit_string_2_array
+from kivy.lang import Builder
 
 
-class GridLayer(GridLayout, CustomLayer):
-    pass
+Builder.load_string("""
+<SyaiV3Play>:
+    orientation: 'vertical'
+
+    AppHeadBar:  # 1-layout
+    BoxLayout:  # 2-layout
+        orientation: 'vertical'
+        BoxLayer:  # 2.1-layout ~ aka menu-bar
+            # background_color: [.28, .28, .26, 1]
+            size_hint_y: None
+            height: dp(24)
+        BoxLayout:  # 2.2-layout
+            BoxLayout:  # 2.2.1-layout
+                size_hint_x: None
+                width: min(dp(400), root.width * .33)
+                BoxLayer:  # 2.2.1.1-layout ~ aka category search-engine
+                    size_hint_y: None
+                    height: dp(34)
+                BoxLayer:  # 2.2.1.2-layout ~ aka category&sub contents
+                BoxLayer:  # 2.2.1.3-layout ~ aka category&sub menu
+                    size_hint_y: None
+                    height: dp(34)
+            BoxLayout:  # 2.2.2-layout
+                ScreenManager:  # 2.2.2.1-layout ~ modulars manager
+                BoxLayout:  # 2.2.2.2-layout ~ aka current modular working list
+                    size_hint_x: None
+                    orientation: 'vertical'
+                    width: min(dp(220), self.parent.width * .35)
+                    BoxLayer:  # 2.2.2.2.1-layout ~ aka c.w.l. search-engine
+                        size_hint_y: None
+                        height: dp(34)
+                    ScrollView:  # 2.2.2.2.2-layout ~ aka c.w.l. scroller
+                        GridLayer:  # 2.2.2.2.2.1-layout ~ aka c.w.l.
+                            cols: 1
+                            size_hint_y: None
+                            height: max(self.minimum_height, self.parent.height)
+    BoxLayer:  # 4-layout ~ aka modulars info-display and menu
+        # background_color: [.12, .12, .15, 1]
+        size_hint_y: None
+        height: dp(28)
+
+""")
 
 
-class BoxLayer(BoxLayout, CustomLayer):
-    pass
-
-
-class HeadBarTemplate(BoxLayer, Dragging):
-    title = StringProperty('')
-    logo_name = StringProperty('')
-    title_color = ListProperty([1, 1, 1, 1])
-    disable_controls = OptionProperty('', options=['', '&ri', '&mi', 'mi&ri'])
-
-    class HeadBarLogoInterface(Widget, IconFullPath):
-        pace = NumericProperty(4)
-        border_radius = ListProperty([0])
-        cover_color = ListProperty([.3, .3, .35, 1])
-
-    class HeadBarButtonInterface(ButtonTemplate):
-        border_radius = [3]
-        toggle_graffiti = NumericProperty(0)
-
-        def on_hover(self):
-            if not self.disabled:
-                self.background_color = [1, 1, 1, .1]
-
-        def on_leave(self):
-            if not self.disabled:
-                self.background_color = [0, 0, 0, 0]
-
-    class HCloseButton(HeadBarButtonInterface):
-        angle = NumericProperty(45)
-
-    class HMinimizeButton(HeadBarButtonInterface):
-        pass
-
-    class HResizeButton(HCloseButton):
-        angle = 0
-
-    class HeadBarControlsContainer(BoxLayout, Hovering):
-        toggle_graffiti = NumericProperty(.2)
-        disable_controls = OptionProperty('', options=['', '&ri', '&mi', 'mi&ri'])
-
-        def on_hover(self):
-            self.toggle_graffiti = 1
-
-        def on_leave(self):
-            self.toggle_graffiti = .2
-
-        def on_disable_controls(self, interface, disabler):
-            if disabler in ['&ri', 'mi&ri']:
-                self.ids.resize.disabled = True
-            elif disabler in ['&mi', 'mi&ri']:
-                self.ids.minimize.disabled = True
-
-        def _invoke_resizing(self, interface):
-            pass
-
-        def _invoke_closing(self, interface):
-            pass
-
-        def _invoke_minimizing(self, interface):
-            pass
-
-    class HeadBarDescription(Label):
-        pass
-
-    def __init__(self, **kwargs):
-        super(HeadBarTemplate, self).__init__(**kwargs)
-        self._apply_configs()
-
-    def _apply_configs(self):
-        pass
-
-
-class AppHeadBar(HeadBarTemplate):
+class AppHeadBar(HeadBar):
     draggable_obj = 'app'
 
     def _apply_configs(self):
@@ -110,6 +84,17 @@ class AppHeadBar(HeadBarTemplate):
         except Exception as exc:
             alert_(exc)
 
+    def on_close(self):
+        # terminating all running app processes
+        App.stop(App.get_running_app())
+
+    def on_resize(self):
+        pass
+
+    def on_minimize(self):
+        # minimizing agent
+        App.get_running_app().root_window.minimize()
+
 
 class DisplayPlayingTimestamps(Label, CustomLayer):
     """  """
@@ -119,67 +104,16 @@ class DisplayPlayingTimestamps(Label, CustomLayer):
         self.text = format_media_timestamp(value) if value else '--:--'
 
 
-class PlayingMediaInfoBar(BoxLayer):
+class PlayingMediaInfoBar(uix.BoxLayer):
     pass
 
 
-class LeftMenuNavigator(BoxLayer):
+class LeftMenuNavigator(uix.BoxLayer):
     pass
 
 
 class LeftMenuElement(GridLayout):
     pass
-
-
-class TypicalPlaylist(BoxLayer, Clicking, Hovering):
-    title = StringProperty('')
-
-    def playback_finished(self, index):
-        prop_index = len(self.children) - (1 + index)
-        self.children[prop_index].change_playing_color()
-
-    def get_another(self, index, _loop, _random):
-        if not self.children:
-            return
-        # increment index only if _loop allows it
-        if _loop != 'one':
-            # incrementing current index value so to access associated media
-            index += 1
-        # in case the index is last in line and there is continuous loop enabled return
-        if index == len(self.children):
-            if _loop != 'all':
-                return
-            if _random and len(self.children) > 2:
-                self.randomize_media(index)
-            else:
-                self.children[-1].on_down()
-        # in case the index is less than 0, it means user performed previous action
-        # when the currently playing media index is 0
-        elif index < 0:
-            self.children[len(self.children) - 1].on_down()
-        # when randomize is enabled
-        elif _random and len(self.children) > 2:
-            self.randomize_media(index)
-        # see the index we have is proportional the mechanism widgets use to order their children,
-        # so here I'm going to normalize index to be proportional with widget ordering algorithm
-        else:
-            propo_index = len(self.children) - (1 + index)
-            child = self.children[propo_index]
-            if child.selected:
-                child.on_down()
-            child.on_down()
-
-    def randomize_media(self, index):
-        from random import randrange
-        # shaking the index list to pick one by chance
-        random_index = randrange(0, len(self.children))
-        # normalize randomized index to be player proportional
-        normal_index = len(self.children) - (1 + random_index)
-        # in case both current supposedly index and randomized one equal, swap normal and randomized
-        if random_index == index:
-            self.children[normal_index].on_down()
-        else:
-            self.children[random_index].on_down()
 
 
 class VolumeTuner(LevelBar):
@@ -191,144 +125,6 @@ class VolumeTuner(LevelBar):
     def _pre_configuring(self):
         volume_scale = read_config('player', 'volume')
         self.level = self.width * float(volume_scale)
-
-
-class RollingLabel(ScrollingBehavior):
-    text = StringProperty('')
-    font_size = StringProperty('11sp')
-    color = ListProperty([.2, .2, .2, 1])
-
-    autoScroll = BooleanProperty(False)
-    '''Indicates whether the property of scrolling is automated or hovered
-       :attr: is a :class:`kivy.properties.Boolean` and default to False
-       ..Info::`if False it only scrolls on hover else scheduled for every some seconds
-    '''
-    scrollHandler = None
-    '''Object reserved for auto-scrolling re-schedule when is active as to re-initiate auto-scrolling
-       every some seconds after the previous scrolling round
-
-       :attr:`python variable` default to None
-    '''
-    auto_jump_start = None
-    ''' invoked when auto-scroll is enabled to jump start before beginning
-            to apply restart_time time-frame rule
-    '''
-    prevent_many_jumps = None
-    ''' Once the auto jump start's attempted, this :attr:`prevent_many_jumps` ensures that there
-            will be no more jump start instead :attr:`restart_time` is utilized
-    '''
-    restart_time = NumericProperty(30)
-
-    def __init__(self, **kwargs):
-        super(RollingLabel, self).__init__(**kwargs)
-        self.animation_1 = None
-        self.animation_2 = None
-
-    def on_size(self, *largs):
-        root = App.get_running_app().root
-        if root.ready is not True:
-            return
-        self.re_order_schedules()
-
-    def on_children(self, *largs):
-        if largs[1]:
-            largs[1][0].bind(texture_size=self.on_texture_size)
-
-    def check_viewport_size(self, *largs):
-        if not self.size[0]:
-            return
-
-        child = self.children[0]
-        if child.size[0] > self.size[0]:
-            time_frame_const = 35 / 800  # Personal const based on self experience,calculation,observation..
-            initial_time = (self.size[0] * time_frame_const)
-            duration = (child.size[0] * initial_time / self.size[0])
-
-            if child.hovered and not self.autoScroll:
-                self.ready_scroll(child.x, initial_time, duration)
-            elif self.autoScroll:
-                start_at = 8 if not self.prevent_many_jumps else self.restart_time
-                self.auto_jump_start = Clock.schedule_once(
-                    lambda x: self.ready_scroll(child.x, initial_time, duration), start_at)
-
-    def ready_scroll(self, *largs):
-        if self.auto_jump_start:
-            self.auto_jump_start = None
-            self.prevent_many_jumps = True
-
-        self.animation_1 = Animation(right=largs[0], d=largs[2])
-        self.animation_2 = Animation(x=0, d=largs[1])
-
-        self.animation_1.bind(on_complete=self.animation1_complete)
-        self.animation_2.bind(on_complete=self.animation2_complete)
-        self.animation_1.start(self.children[0])
-
-    def _restart_scroll(self, *largs):
-        if self.animation_1:
-            self.animation_1.start(self.children[0])
-
-    def on_texture_size(self, *largs):
-        largs[0].width = largs[1][0]
-        self.prevent_many_jumps = None
-        self.re_order_schedules()
-
-    def re_order_schedules(self):
-        self.cancel_schedules()
-        self.cancel_animations()
-
-        if self.autoScroll:
-            self.check_viewport_size()
-
-    def cancel_schedules(self):
-        if self.auto_jump_start:
-            self.auto_jump_start.cancel()
-            self.auto_jump_start = None
-
-        if self.scrollHandler:
-            self.scrollHandler.cancel()
-            self.scrollHandler = None
-
-    def cancel_animations(self):
-        child = self.children[0]
-        if self.animation_1:
-            self.animation_1.cancel(child)
-        if self.animation_2:
-            self.animation_2.cancel(child)
-
-        self.reset_viewport()
-
-    def animation1_complete(self, *largs):
-        largs[1].x = self.size[0]
-        self.animation_2.start(largs[1])
-
-    def animation2_complete(self, *largs):
-        if self.autoScroll:
-            self.scrollHandler = Clock.schedule_once(
-                self._restart_scroll, self.restart_time)
-
-    def compute_restartTime(self, t_frame=None):
-        if t_frame is None:
-            self.restart_time = 30
-        else:
-            ratio = int(t_frame / 50)
-            if ratio < 3:
-                if t_frame > 30:
-                    self.restart_time = t_frame
-                return
-            if ratio > 10:
-                ratio = int(t_frame / (50 * 9))
-            self.restart_time = t_frame / ratio
-
-    def on_enter(self):
-        if not self.autoScroll:
-            self.check_viewport_size()
-
-    def on_leave(self):
-        if not self.autoScroll:
-            self.cancel_animations()
-
-    def reset_viewport(self):
-        self.children[0].x = 0
 
 
 class VideoAudioPlayer(Screen):
@@ -631,11 +427,11 @@ class Downloader(Screen):
     pass
 
 
-class Splashing(BoxLayer):
+class Splashing(uix.BoxLayer):
     pass
 
 
-class SyaiV3Play(BoxLayer):
+class SyaiV3Play(uix.BoxLayer):
 
     def __init__(self, **kwargs):
         super(SyaiV3Play, self).__init__(**kwargs)
