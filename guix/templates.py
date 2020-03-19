@@ -126,7 +126,7 @@ class IconFullPath(object):
     icon_name = StringProperty('')
 
     def on_icon_name(self, interface, value):
-        icon_full_relative_path = path.join(appDataDir(), 'data/icons', value)
+        icon_full_relative_path = path.join(appDataDir(), 'resources', 'icons', value)
         if path.isfile(icon_full_relative_path):
             self.source = icon_full_relative_path
         else:

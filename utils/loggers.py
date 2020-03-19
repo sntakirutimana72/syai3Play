@@ -9,12 +9,10 @@ logger = None
 def _setup_logging():
     global logger
 
-    logfile_name = datetime.now().strftime('%B %Y')
-    logfile_name = path.join(appDataDir(), 'logs', logfile_name + '.log')
-
-    basicConfig(filename=logfile_name,
+    logfile_name = datetime.now().strftime('%B-%Y')
+    basicConfig(filename=path.join(appDataDir(), 'resources', 'logs', logfile_name + '.log'),
                 format='%(asctime)s :: %(levelname)s :: %(name)s :: %(message)s')
-    logger = getLogger('SyaiV3Play')
+    logger = getLogger('syaiV3play')
     logger.setLevel(DEBUG)
 
 

@@ -1,0 +1,252 @@
+2020-03-19 16:45:36,417 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_2.txt
+2020-03-19 16:45:36,416 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:45:36,419 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:45:36,420 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:45:36,421 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:45:36,422 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:45:36,441 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:45:36,441 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:45:36,776 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:45:36,873 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:45:36,920 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:45:37,028 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:45:37,031 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:45:37,032 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:45:37,035 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:45:37,035 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:45:37,036 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:45:37,037 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:45:37,038 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:45:37,039 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:45:37,040 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:45:37,067 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:45:37,069 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:45:37,082 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:45:37,110 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:45:37,113 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:45:42,938 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:45:42,966 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 16:46:57,946 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_3.txt
+2020-03-19 16:46:57,946 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:46:57,948 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:46:57,948 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:46:57,949 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:46:57,949 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:46:57,950 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:46:57,950 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:46:58,319 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:46:58,420 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:46:58,466 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:46:58,552 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:46:58,554 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:46:58,555 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:46:58,556 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:46:58,556 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:46:58,557 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:46:58,558 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:46:58,558 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:46:58,560 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:46:58,561 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:46:58,587 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:46:58,588 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:46:58,602 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:46:58,629 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:46:58,631 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:47:01,375 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:47:01,378 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 16:47:48,491 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_4.txt
+2020-03-19 16:47:48,490 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:47:48,494 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:47:48,496 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:47:48,498 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:47:48,499 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:47:48,500 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:47:48,502 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:47:48,960 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:47:49,062 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:47:49,300 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:47:49,412 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:47:49,418 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:47:49,419 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:47:49,419 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:47:49,420 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:47:49,420 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:47:49,422 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:47:49,423 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:47:49,424 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:47:49,425 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:47:49,459 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:47:49,462 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:47:49,550 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:47:49,625 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:47:49,629 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:47:51,977 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:47:52,013 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 16:48:26,953 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_5.txt
+2020-03-19 16:48:26,952 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:48:26,954 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:48:26,954 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:48:26,955 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:48:26,955 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:48:26,956 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:48:26,956 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:48:27,299 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:48:27,398 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:48:27,445 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:48:27,517 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:48:27,523 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:48:27,525 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:48:27,526 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:48:27,527 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:48:27,528 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:48:27,530 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:48:27,532 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:48:27,533 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:48:27,534 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:48:27,561 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:48:27,563 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:48:27,577 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:48:27,602 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:48:27,605 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:48:51,316 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:48:51,320 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 16:51:52,769 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_6.txt
+2020-03-19 16:51:52,768 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:51:52,770 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:51:52,770 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:51:52,771 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:51:52,772 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:51:52,772 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:51:52,773 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:51:53,112 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:51:53,213 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:51:53,261 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:51:53,401 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:51:53,403 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:51:53,404 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:51:53,404 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:51:53,406 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:51:53,406 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:51:53,407 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:51:53,407 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:51:53,408 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:51:53,409 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:51:53,440 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:51:53,441 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:51:53,455 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:51:53,479 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:51:53,483 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:52:00,414 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:52:00,418 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 16:53:00,549 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_7.txt
+2020-03-19 16:53:00,548 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 16:53:00,550 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 16:53:00,550 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 16:53:00,551 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 16:53:00,551 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 16:53:00,552 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 16:53:00,553 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 16:53:00,894 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 16:53:00,997 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 16:53:01,046 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 16:53:01,126 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 16:53:01,128 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 16:53:01,130 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 16:53:01,133 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 16:53:01,135 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 16:53:01,136 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 16:53:01,138 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 16:53:01,140 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 16:53:01,141 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 16:53:01,142 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 16:53:01,169 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 16:53:01,170 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 16:53:01,182 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 16:53:01,209 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 16:53:01,212 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 16:53:21,597 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 16:53:21,601 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 17:00:06,850 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_8.txt
+2020-03-19 17:00:06,835 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 17:00:06,852 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 17:00:06,852 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 17:00:06,852 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 17:00:06,852 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 17:00:06,853 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 17:00:06,853 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 17:00:07,185 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 17:00:07,280 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 17:00:07,322 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 17:00:07,389 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 17:00:07,390 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 17:00:07,391 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 17:00:07,391 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 17:00:07,392 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 17:00:07,392 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 17:00:07,392 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 17:00:07,393 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 17:00:07,393 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 17:00:07,394 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 17:00:07,421 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 17:00:07,424 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 17:00:07,438 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 17:00:07,463 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 17:00:07,465 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 17:00:09,898 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 17:00:09,923 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_9.txt
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 17:01:25,576 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 17:01:25,944 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 17:01:26,038 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 17:01:26,085 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 17:01:26,168 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 17:01:26,170 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 17:01:26,170 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 17:01:26,173 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 17:01:26,174 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 17:01:26,174 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 17:01:26,175 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 17:01:26,176 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 17:01:26,176 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 17:01:26,177 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 17:01:26,203 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 17:01:26,204 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 17:01:26,217 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 17:01:26,242 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 17:01:26,244 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 17:01:27,290 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 17:01:27,324 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.
+2020-03-19 17:04:23,808 :: INFO :: kivy :: [Logger      ] Record log in C:\Users\English Lab\.kivy\logs\kivy_20-03-19_10.txt
+2020-03-19 17:04:23,808 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.gstreamer" 0.1.18
+2020-03-19 17:04:23,812 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.glew" 0.1.12
+2020-03-19 17:04:23,813 :: INFO :: kivy :: [deps        ] Successfully imported "kivy_deps.sdl2" 0.1.23
+2020-03-19 17:04:23,814 :: INFO :: kivy :: [Kivy        ] v1.11.1
+2020-03-19 17:04:23,815 :: INFO :: kivy :: [Kivy        ] Installed at "C:\Users\English Lab\Envs\syai3Play\lib\site-packages\kivy\__init__.py"
+2020-03-19 17:04:23,816 :: INFO :: kivy :: [Python      ] v3.6.8 (tags/v3.6.8:3c6b436a57, Dec 24 2018, 00:16:47) [MSC v.1916 64 bit (AMD64)]
+2020-03-19 17:04:23,817 :: INFO :: kivy :: [Python      ] Interpreter at "C:\Users\English Lab\Envs\syai3Play\Scripts\python.exe"
+2020-03-19 17:04:24,143 :: INFO :: kivy :: [Factory     ] 184 symbols loaded
+2020-03-19 17:04:24,241 :: INFO :: kivy :: [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil, img_gif (img_ffpyplayer ignored)
+2020-03-19 17:04:24,290 :: INFO :: kivy :: [Window      ] Provider: sdl2
+2020-03-19 17:04:24,388 :: INFO :: kivy :: [GL          ] Using the "OpenGL" graphics system
+2020-03-19 17:04:24,392 :: INFO :: kivy :: [GL          ] GLEW initialization succeeded
+2020-03-19 17:04:24,394 :: INFO :: kivy :: [GL          ] Backend used <glew>
+2020-03-19 17:04:24,400 :: INFO :: kivy :: [GL          ] OpenGL version <b'4.5.0 - Build 23.20.16.4849'>
+2020-03-19 17:04:24,401 :: INFO :: kivy :: [GL          ] OpenGL vendor <b'Intel'>
+2020-03-19 17:04:24,402 :: INFO :: kivy :: [GL          ] OpenGL renderer <b'Intel(R) HD Graphics 510'>
+2020-03-19 17:04:24,403 :: INFO :: kivy :: [GL          ] OpenGL parsed version: 4, 5
+2020-03-19 17:04:24,403 :: INFO :: kivy :: [GL          ] Shading version <b'4.50 - Build 23.20.16.4849'>
+2020-03-19 17:04:24,404 :: INFO :: kivy :: [GL          ] Texture max size <16384>
+2020-03-19 17:04:24,405 :: INFO :: kivy :: [GL          ] Texture max units <32>
+2020-03-19 17:04:24,434 :: INFO :: kivy :: [Window      ] auto add sdl2 input provider
+2020-03-19 17:04:24,436 :: INFO :: kivy :: [Window      ] virtual keyboard not allowed, single mode, not docked
+2020-03-19 17:04:24,452 :: INFO :: kivy :: [Text        ] Provider: sdl2
+2020-03-19 17:04:24,485 :: INFO :: kivy :: [Base        ] Start application main loop
+2020-03-19 17:04:24,487 :: INFO :: kivy :: [GL          ] NPOT texture support is available
+2020-03-19 17:04:32,171 :: INFO :: kivy :: [Base        ] Leaving application in progress...
+2020-03-19 17:04:32,174 :: INFO :: kivy :: [WindowSDL   ] exiting mainloop and closing.

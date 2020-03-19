@@ -1,6 +1,7 @@
 import sys
 from os import chdir, environ
 from kivy.config import Config
+from utils.loggers import alert_
 from pyautogui import size as pysize
 from utils.read_config import read_config
 from utils.helpers import digit_string_2_array
