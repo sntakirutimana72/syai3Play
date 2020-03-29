@@ -1,99 +1,16 @@
-import re
-import json
-from utils.loggers import alert_, inform_
-from os import listdir
-from kivy.app import App
+from os.path import join
+from kivy.clock import Clock
 from threading import Thread
-from guix import templates as uix
-from guix.headbar import HeadBar
-from guix.levelbar import LevelBar
-from guix.customlayers import CustomLayer
-from kivy.uix.label import Label
-from kivy.animation import Animation
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen
-from utils.read_config import read_config
-from kivy.uix.gridlayout import GridLayout
-from kivy.properties import ListProperty, BooleanProperty, \
-    StringProperty, OptionProperty, NumericProperty, ObjectProperty
-from utils.helpers import is_supported_format, duration_getter, \
-    format_media_timestamp, digit_string_2_array
 from kivy.lang import Builder
+from kivy.uix.label import Label
+from utils.loggers import alert_
+from guix.templates import BoxLayer
+from kivy.uix.screenmanager import Screen
+from guix.customlayers import CustomLayer
+from utils.helpers import format_media_timestamp, is_supported_format, duration_getter
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty, OptionProperty, BooleanProperty
 
-
-Builder.load_string("""
-<SyaiV3Play>:
-    orientation: 'vertical'
-
-    AppHeadBar:  # 1-layout
-    BoxLayout:  # 2-layout
-        orientation: 'vertical'
-        BoxLayer:  # 2.1-layout ~ aka menu-bar
-            # background_color: [.28, .28, .26, 1]
-            size_hint_y: None
-            height: dp(24)
-        BoxLayout:  # 2.2-layout
-            BoxLayout:  # 2.2.1-layout
-                size_hint_x: None
-                width: min(dp(400), root.width * .33)
-                BoxLayer:  # 2.2.1.1-layout ~ aka category search-engine
-                    size_hint_y: None
-                    height: dp(34)
-                BoxLayer:  # 2.2.1.2-layout ~ aka category&sub contents
-                BoxLayer:  # 2.2.1.3-layout ~ aka category&sub menu
-                    size_hint_y: None
-                    height: dp(34)
-            BoxLayout:  # 2.2.2-layout
-                ScreenManager:  # 2.2.2.1-layout ~ modulars manager
-                BoxLayout:  # 2.2.2.2-layout ~ aka current modular working list
-                    size_hint_x: None
-                    orientation: 'vertical'
-                    width: min(dp(220), self.parent.width * .35)
-                    BoxLayer:  # 2.2.2.2.1-layout ~ aka c.w.l. search-engine
-                        size_hint_y: None
-                        height: dp(34)
-                    ScrollView:  # 2.2.2.2.2-layout ~ aka c.w.l. scroller
-                        GridLayer:  # 2.2.2.2.2.1-layout ~ aka c.w.l.
-                            cols: 1
-                            size_hint_y: None
-                            height: max(self.minimum_height, self.parent.height)
-    BoxLayer:  # 4-layout ~ aka modulars info-display and menu
-        # background_color: [.12, .12, .15, 1]
-        size_hint_y: None
-        height: dp(28)
-
-""")
-
-
-class AppHeadBar(HeadBar):
-    draggable_obj = 'app'
-
-    def _apply_configs(self):
-        try:
-            for option, value in read_config('head-bar'):
-                if option == 'title':
-                    self.title = value
-                elif option == 'logo':
-                    self.logo_name = value
-                else:
-                    color = digit_string_2_array(value, float)
-                    if option == 'font_color':
-                        self.title_color = color
-                    else:
-                        self.background_color = color
-        except Exception as exc:
-            alert_(exc)
-
-    def on_close(self):
-        # terminating all running app processes
-        App.stop(App.get_running_app())
-
-    def on_resize(self):
-        pass
-
-    def on_minimize(self):
-        # minimizing agent
-        App.get_running_app().root_window.minimize()
+Builder.load_file(join('viewscontrollers', 'v3player', 'v3player.kv'))
 
 
 class DisplayPlayingTimestamps(Label, CustomLayer):
@@ -104,30 +21,11 @@ class DisplayPlayingTimestamps(Label, CustomLayer):
         self.text = format_media_timestamp(value) if value else '--:--'
 
 
-class PlayingMediaInfoBar(uix.BoxLayer):
+class PlayingMediaInfoBar(BoxLayer):
     pass
 
 
-class LeftMenuNavigator(uix.BoxLayer):
-    pass
-
-
-class LeftMenuElement(GridLayout):
-    pass
-
-
-class VolumeTuner(LevelBar):
-
-    def __init__(self, **kwargs):
-        super(VolumeTuner, self).__init__(**kwargs)
-        self._pre_configuring()
-
-    def _pre_configuring(self):
-        volume_scale = read_config('player', 'volume')
-        self.level = self.width * float(volume_scale)
-
-
-class VideoAudioPlayer(Screen):
+class V3Player(Screen):
     # An engine for audio medias
     _audioModular = ObjectProperty(None, allownone=True)
     # An engine for video medias
@@ -158,7 +56,7 @@ class VideoAudioPlayer(Screen):
     _keypadInterface = None
 
     def on_enter(self, window):
-        """ When mouse enters player, invoke acquire keypad and invoke keypad control directive protocol """
+        """ When mouse enters player, acquires keypad and invoke its control directive protocol """
         try:
             self._keypadInterface = window.request_keyboard(self._keypadInterface_detached, self)
             self._keypadInterface.bind(on_key_down=self._command_media_directives_with_keypad_)
@@ -409,61 +307,3 @@ class VideoAudioPlayer(Screen):
     def shuffle_(self, interface):
         """ motion events of shuffle interface-actor """
         pass
-
-
-class Recorder(Screen):
-    pass
-
-
-class ImageViewer(Screen):
-    pass
-
-
-class BroadcastPlayer(Screen):
-    pass
-
-
-class Downloader(Screen):
-    pass
-
-
-class Splashing(uix.BoxLayer):
-    pass
-
-
-class SyaiV3Play(uix.BoxLayer):
-
-    def __init__(self, **kwargs):
-        super(SyaiV3Play, self).__init__(**kwargs)
-        self._apply_configsOn_startup()
-
-    def _apply_configsOn_startup(self):
-        """ configuring main app view with pre-saved settings """
-
-        back_color = read_config('main', 'back_color')
-        self.background_color = digit_string_2_array(back_color, float)
-
-    def process_cli_inputs(self, *largs):
-        """ Capture all inputs from command line on startup """
-        print(largs)
-
-    def _ready_routine(self):
-        """ called after startup dynamic resizing completes """
-        pass
-
-    def _activate_dragAndDrop_tunel(self):
-        Window.bind(on_dropfile=self._processing_dropped_file)
-
-    def _processing_dropped_file(self, *largs):
-        if self.dropping is None:
-            # mapping a dropping status widget
-            self.show_dropping_status()
-            # creating after dropping counter measure
-            self.dropping = Clock.schedule_once(self.after_all_dropped, 1.4)
-        # freezing after dropping counter measure just to sort a dropped file
-        self.dropping.cancel()
-        # decoding dropped file to <class str>
-        dropped_file = largs[1].decode('utf-8')
-        self.verify_file_address(dropped_file)
-        # unfreeze after dropping counter measure
-        self.dropping()

@@ -1,34 +1,35 @@
+import sys
+from os import environ, chdir
+
+
+def _resources_redirect_protocol():
+    environ['KIVY_NO_FILELOG'] = '1'
+    environ['KIVY_NO_CONSOLELOG'] = '1'
+    environ['KIVY_NO_ENV_CONFIG'] = '1'
+
+    if getattr(sys, 'frozen', False):
+        chdir(sys._MEIPASS)
+
+_resources_redirect_protocol()
+
+
 if __name__ == '__main__':
+    from utils.loggers import alert_
     from utils.protocols import startup_protocol
     startup_protocol()  # engaging startup routine
 
     import sys
     from kivy.app import App
-    from viewscontrollers.views import SyaiV3Play
+    from viewscontrollers.v3play.v3play import V3Play
 
 
-    class V3PlayApp(App):
-        title = 'syai V3Play'
+    class syaiV3PlayApp(App):
+        title = 'syaiV3play'
         use_kivy_settings = False
 
         def build(self):
-            self.root = SyaiV3Play()
+            self.root = V3Play()
             return self.root
 
-        def on_start(self):
-            pass
 
-        def on_restore(self):
-            pass
-
-        def on_minimize(self):
-            pass
-
-        def on_maximize(self):
-            pass
-
-        def on_stop(self, *largs):
-            pass
-
-
-    V3PlayApp().run()
+    syaiV3PlayApp().run()

@@ -1,8 +1,8 @@
+from kivy.clock import Clock
 from kivy.lang import Builder
-from guix.templates import Hovering
 from guix.customlayers import CustomLayer
-from kivy.properties import ListProperty, BooleanProperty, \
-    StringProperty, OptionProperty, NumericProperty
+from guix.templates import Hovering, IconFullPath
+from kivy.properties import ListProperty, BooleanProperty, StringProperty, OptionProperty, NumericProperty
 
 
 Builder.load_string("""
@@ -11,7 +11,7 @@ Builder.load_string("""
         Color:
             rgba: self.level_color
         RoundedRectangle:
-            radius: self.radius
+            radius: self.border_radius
             pos: self.x + dp(1.5), self.y + dp(1.5)
             size: dp(self.level - 3), self.size[1] - dp(3)
 
@@ -20,28 +20,29 @@ Builder.load_string("""
         Ellipse:
             pos: (self.x + dp(self.level - (self.height + 10) / 2), self.y - dp(5))
             size: (self.height + dp(10), self.height + dp(10))
-            source: self.handle_image
+            source: self.source
 """)
 
 
-class LevelBar(CustomLayer, Hovering):
+class LevelBar(CustomLayer, Hovering, IconFullPath):
     handle_color = ListProperty([.2, .2, .25, 1])
-    handle_image = StringProperty('icons/yellow.png')
+    handle_image = StringProperty('')
 
     level = NumericProperty(0.)
     level_color = ListProperty([0, .4, .3, .6])
-    _recent_level = NumericProperty(0.)  # Track bar final level in percentage 0.0% after all motion events
 
     visible = OptionProperty('show', options=['show', 'hide'])  # clocking capability
     bar_active = BooleanProperty(True)  # Disables & Enables interactions with the handle
     auto_visibility_switch = None  # Automates the visibility mode switching when :attr::visible::`is enabled`
+    _recent_level = 0.  # Track bar final level in percentage 0.0% after all motion events
     _width_tether = None
-    """ last width to be used when auto resize triggered  in order to re-normalize level """
 
     def __init__(self, **kwargs):
         self.register_event_type('on_final_point')
         super(LevelBar, self).__init__(**kwargs)
         self.background_color = [.06, .03, 0, .4]
+        if self.handle_image:
+            self.icon_name = self.handle_image
 
     def on_hover(self):
         if self.disabled or self.visible == 'show':

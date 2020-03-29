@@ -1,4 +1,4 @@
-import audio_metadata
+# import audio_metadata
 from utils.read_config import read_config
 
 
@@ -37,5 +37,5 @@ def is_supported_format(source):
 
 def duration_getter(source):
     """ audio-video metadata getter, for instance media duration """
-    media_details = audio_metadata.load(source)
-    return media_details.streaminfo.duration
+    # media_details = audio_metadata.load(source)
+    return 0.  # media_details.streaminfo.duration
