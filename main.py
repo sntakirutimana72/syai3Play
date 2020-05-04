@@ -18,7 +18,6 @@ if __name__ == '__main__':
     from utils.protocols import startup_protocol
     startup_protocol()  # engaging startup routine
 
-    import sys
     from kivy.app import App
     from viewscontrollers.v3play.v3play import V3Play
 

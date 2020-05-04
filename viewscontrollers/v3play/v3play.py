@@ -1,5 +1,5 @@
-from kivy.app import App
 from os.path import join
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang import Builder
 from guix.templates import BoxLayer
