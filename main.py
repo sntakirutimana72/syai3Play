@@ -10,6 +10,7 @@ def _resources_redirect_protocol():
     if getattr(sys, 'frozen', False):
         chdir(sys._MEIPASS)
 
+
 _resources_redirect_protocol()
 
 
